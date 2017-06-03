@@ -1,4 +1,4 @@
-// Package bytesort encodes common types as a binary/byte slices that are bytewise sortable.
+// Package bytesort encodes common types as binary/byte slices that are bytewise sortable.
 //
 // The output is intended for binary/bytewise comparison and sorting.
 // More specifically for creating the keys used in indexes in a bolt DB.
