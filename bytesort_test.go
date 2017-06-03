@@ -5,22 +5,54 @@ import (
 	"encoding/hex"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"math"
+	"os"
+	"path/filepath"
 	"reflect"
+	"regexp"
 	"sort"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/kylelemons/godebug/diff"
 	"github.com/kylelemons/godebug/pretty"
-	"github.com/nochso/bolster/bytesort"
-	"github.com/nochso/bolster/internal"
+	"github.com/nochso/bytesort"
 )
 
 var (
-	update   = flag.Bool("update", false, "update golden test files")
-	location = time.FixedZone("UTC-4", -4*60*60)
+	update       = flag.Bool("update", false, "update golden test files")
+	location     = time.FixedZone("UTC-4", -4*60*60)
+	reUnderscore = regexp.MustCompile(`([A-Z][^/_]+)_`)
 )
+
+// Gold compares actual to a golden file named after t.Name()
+func Gold(t *testing.T, actual []byte, update bool) {
+	name := strings.TrimPrefix(t.Name(), "Test")
+	name = reUnderscore.ReplaceAllString(name, `$1/`)
+	name += ".golden"
+	path := filepath.Join("test-fixtures", name)
+	err := os.MkdirAll(filepath.Dir(path), 0755)
+	if err != nil {
+		t.Error(err)
+	}
+	if update {
+		t.Log("updating golden test file")
+		err = ioutil.WriteFile(path, actual, 0644)
+		if err != nil {
+			t.Error(err)
+		}
+		return
+	}
+	exp, err := ioutil.ReadFile(path)
+	if err != nil {
+		t.Error(err)
+	}
+	if !bytes.Equal(exp, actual) {
+		t.Error("-Actual +Expected\n" + diff.Diff(string(actual), string(exp)))
+	}
+}
 
 func BenchmarkEncode(b *testing.B) {
 	for name, values := range sortTests {
@@ -269,7 +301,7 @@ func testEncode(t *testing.T, values []interface{}) {
 		}
 		fmt.Fprintf(act, "%v\n%s\n", v, hex.Dump(b))
 	}
-	internal.Gold(t, act.Bytes(), *update)
+	Gold(t, act.Bytes(), *update)
 }
 
 func TestEncode_fixedLengthExceptForStrings(t *testing.T) {
