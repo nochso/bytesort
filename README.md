@@ -27,4 +27,4 @@ go get github.com/nochso/bytesort
 
 ## License
 
-MIT.
+[MIT](LICENSE).
