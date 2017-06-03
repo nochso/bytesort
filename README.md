@@ -25,6 +25,11 @@ sort.Slice(s, func(i, j int) bool {
 go get github.com/nochso/bytesort
 ```
 
+## Change log and versioning
+This project adheres to [Semantic Versioning](http://semver.org/).
+
+See the [CHANGELOG](CHANGELOG.md) for a full history of releases.
+
 ## License
 
 [MIT](LICENSE).
