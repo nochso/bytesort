@@ -1,6 +1,9 @@
 sudo: false
 language: go
+# https://github.com/golang/go/wiki/Go-Release-Cycle#release-maintenance
 go:
+  - 1.7
+  - 1.8
   - 1.x
 install:
   - # Do nothing. This is needed to prevent default install action "go get -t -v ./..." from happening here (we want it to happen inside script step).
