@@ -2,8 +2,6 @@ sudo: false
 language: go
 # https://github.com/golang/go/wiki/Go-Release-Cycle#release-maintenance
 go:
-  - 1.7
-  - 1.8
   - 1.x
   - tip
 install:
