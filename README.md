@@ -10,20 +10,53 @@ Package bytesort encodes common Go types as binary/byte slices that are bytewise
 The output is intended for binary/bytewise comparison and sorting.
 More specifically for creating the keys used in indexes in a bolt DB.
 
-Use `bytes.Compare` and `sort.Slice` to sort [][]byte:
-
-```go
-sort.Slice(s, func(i, j int) bool {
-	return bytes.Compare(s[i], s[j]) < 0
-})
-```
-`sort.Search` might also be of interest.
-
 ## Install
 
 ```
 go get github.com/nochso/bytesort
 ```
+
+## Usage
+
+[Full documentation is available at godoc.org](https://godoc.org/github.com/nochso/bytesort).
+
+### Output example
+
+```go
+vv := []interface{}{
+	"abc",
+	int16(math.MinInt16),
+	int16(0),
+	int16(math.MaxInt16),
+	false,
+	true,
+}
+for _, v := range vv {
+	b, err := bytesort.Encode(v)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("% 8X %-6T %#v\n", b, v, v)
+}
+// Output:
+// 61 62 63 string "abc"
+//    00 00 int16  -32768
+//    80 00 int16  0
+//    FF FF int16  32767
+//       00 bool   false
+//       01 bool   true
+```
+
+Use `bytes.Compare` and `sort.Slice` to sort a slice of []byte:
+
+```go
+input := [][]byte{ ... }
+sort.Slice(s, func(i, j int) bool {
+	return bytes.Compare(s[i], s[j]) < 0
+})
+```
+`sort.Search` might also be of interest.
 
 ## Change log and versioning
 This project adheres to [Semantic Versioning](http://semver.org/).
