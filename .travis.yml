@@ -18,5 +18,5 @@ script:
   - go get -t -v ./...
   - diff -u <(echo -n) <(gofmt -d -s .)
   - go tool vet .
-  - overalls -project github.com/nochso/bytesort -covermode count -- -race -v
+  - overalls -project github.com/nochso/bytesort -covermode atomic -- -race -v
   - $HOME/gopath/bin/goveralls -coverprofile=overalls.coverprofile -service=travis-ci
