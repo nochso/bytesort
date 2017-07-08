@@ -328,3 +328,29 @@ func TestEncode_fixedLengthExceptForStrings(t *testing.T) {
 		})
 	}
 }
+
+func ExampleEncode() {
+	vv := []interface{}{
+		"abc",
+		int16(math.MinInt16),
+		int16(0),
+		int16(math.MaxInt16),
+		false,
+		true,
+	}
+	for _, v := range vv {
+		b, err := bytesort.Encode(v)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Printf("% 8X %-6T %#v\n", b, v, v)
+	}
+	// Output:
+	// 61 62 63 string "abc"
+	//    00 00 int16  -32768
+	//    80 00 int16  0
+	//    FF FF int16  32767
+	//       00 bool   false
+	//       01 bool   true
+}
