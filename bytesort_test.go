@@ -100,6 +100,12 @@ func TestEncode_error(t *testing.T) {
 	}
 }
 
+type int64Type int64
+
+func (s int64Type) EncodeSortable() ([]byte, error) {
+	return bytesort.Encode(int64(s))
+}
+
 var sortTests = map[string][]interface{}{
 	"uint8": {
 		byte(0),
@@ -153,6 +159,15 @@ var sortTests = map[string][]interface{}{
 		int64(1),
 		int64(math.MaxInt64 - 1),
 		int64(math.MaxInt64),
+	},
+	"struct wrapping int64": {
+		int64Type(math.MinInt64),
+		int64Type(math.MinInt64 + 1),
+		int64Type(-1),
+		int64Type(0),
+		int64Type(1),
+		int64Type(math.MaxInt64 - 1),
+		int64Type(math.MaxInt64),
 	},
 	"uint": {
 		uint(0),

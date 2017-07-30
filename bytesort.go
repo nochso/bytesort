@@ -19,6 +19,12 @@ import (
 	"time"
 )
 
+// Encoder is the interface used for encoding custom types.
+type Encoder interface {
+	// EncodeSortable encodes the receiver as a byte slice in a byte sortable way.
+	EncodeSortable() ([]byte, error)
+}
+
 // Encode a value as a byte slice that is bytewise/binary-sortable.
 //
 // Any results for the same type are sortable using a bytewise/binary
@@ -57,6 +63,8 @@ func Encode(v interface{}) (b []byte, err error) {
 		return encodeFloat64(v.(float64)), nil
 	case float32:
 		return encodeFloat32(v.(float32)), nil
+	case Encoder:
+		return v.(Encoder).EncodeSortable()
 	}
 
 	b, err = encodeInt(v)
