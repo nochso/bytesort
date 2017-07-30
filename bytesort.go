@@ -48,9 +48,9 @@ type Encoder interface {
 //	string    (case-sensitive)
 //	time.Time (normalised to UTC)
 func Encode(v interface{}) (b []byte, err error) {
-	switch v.(type) {
+	switch vv := v.(type) {
 	case string:
-		b = []byte(v.(string))
+		b = []byte(vv)
 		// Special case for empty strings because empty bucket names are not
 		// allowed. Use a zero byte to represent an empty string.
 		if len(b) == 0 {
@@ -58,81 +58,60 @@ func Encode(v interface{}) (b []byte, err error) {
 		}
 		return
 	case time.Time:
-		return encodeTime(v.(time.Time))
+		return encodeTime(vv)
 	case float64:
-		return encodeFloat64(v.(float64)), nil
+		return encodeFloat64(vv), nil
 	case float32:
-		return encodeFloat32(v.(float32)), nil
-	case Encoder:
-		return v.(Encoder).EncodeSortable()
-	}
-
-	b, err = encodeInt(v)
-	if err != nil {
-		return
-	}
-	return
-}
-
-func encodeInt(data interface{}) ([]byte, error) {
-	n := intDataSize(data)
-	if n == 0 {
-		return nil, fmt.Errorf("bytesort.Encode: unsupported type %T", data)
-	}
-	bs := make([]byte, n)
-	switch v := data.(type) {
+		return encodeFloat32(vv), nil
 	case bool:
-		if v {
-			bs[0] = 1
-		} else {
-			bs[0] = 0
+		if vv {
+			return []byte{1}, nil
 		}
+		return []byte{0}, nil
 	case int8:
-		bs[0] = byte(v)
+		return []byte{byte(vv) ^ 0x80}, nil
 	case uint8:
-		bs[0] = v
+		return []byte{vv}, nil
 	case int16:
-		binary.BigEndian.PutUint16(bs, uint16(v))
+		b := make([]byte, 2)
+		binary.BigEndian.PutUint16(b, uint16(vv))
+		b[0] ^= 0x80
+		return b, nil
 	case uint16:
-		binary.BigEndian.PutUint16(bs, v)
+		b := make([]byte, 2)
+		binary.BigEndian.PutUint16(b, vv)
+		return b, nil
 	case int32:
-		binary.BigEndian.PutUint32(bs, uint32(v))
+		b := make([]byte, 4)
+		binary.BigEndian.PutUint32(b, uint32(vv))
+		b[0] ^= 0x80
+		return b, nil
 	case uint32:
-		binary.BigEndian.PutUint32(bs, v)
+		b := make([]byte, 4)
+		binary.BigEndian.PutUint32(b, vv)
+		return b, nil
 	case int64:
-		binary.BigEndian.PutUint64(bs, uint64(v))
-	case int:
-		binary.BigEndian.PutUint64(bs, uint64(int64(v)))
+		b := make([]byte, 8)
+		binary.BigEndian.PutUint64(b, uint64(vv))
+		b[0] ^= 0x80
+		return b, nil
 	case uint64:
-		binary.BigEndian.PutUint64(bs, v)
+		b := make([]byte, 8)
+		binary.BigEndian.PutUint64(b, vv)
+		return b, nil
+	case int:
+		b := make([]byte, 8)
+		binary.BigEndian.PutUint64(b, uint64(vv))
+		b[0] ^= 0x80
+		return b, nil
 	case uint:
-		binary.BigEndian.PutUint64(bs, uint64(v))
+		b := make([]byte, 8)
+		binary.BigEndian.PutUint64(b, uint64(vv))
+		return b, nil
+	case Encoder:
+		return vv.EncodeSortable()
 	}
-	switch data.(type) {
-	case int64, int32, int16, int8, int:
-		// The order is almost correct, however ascending positive numbers are
-		// currently before ascending negative numbers. Flip the first bit of
-		// the two's complement: both ranges switch places, resulting in
-		// consecutively ascending sort order.
-		bs[0] ^= 0x80
-	}
-	return bs, nil
-}
-
-// intDataSize returns the size of the data required to represent the data when encoded.
-// It returns zero if the type cannot be implemented by the fast path in Read or Write.
-func intDataSize(data interface{}) int {
-	switch data.(type) {
-	case bool, int8, uint8:
-		return 1
-	case int16, uint16:
-		return 2
-	case int32, uint32:
-		return 4
-	case int64, uint64, int, uint:
-		return 8
-	}
-	return 0
+	return nil, fmt.Errorf("bytesort.Encode: unsupported type %T", v)
 }
 
 // http://stereopsis.com/radix.html
