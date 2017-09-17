@@ -1,4 +1,5 @@
 # Change Log
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
@@ -6,8 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## 1.0.0 - 2017-06-03
 ### Added
+
+- Interface `Encoder` `EncodeSortable() ([]byte, error)`. It allows you to
+  define the sortable encoding of your own types.
+- Add godoc example of `Encode()` with output.
+
+### Changed
+
+- Improve speed by 30% on average by inlining code. See commit ab2cdb70 for
+  details.
+
+## 1.0.0 - 2017-06-03
+
+### Added
+
 - Split github.com/nochso/bolster/bytesort into a new separate repository.
 
 [Unreleased]: https://github.com/nochso/bytesort/compare/1.0.0...HEAD
