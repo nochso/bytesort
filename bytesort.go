@@ -28,13 +28,11 @@ type Encoder interface {
 // Encode a value as a byte slice that is bytewise/binary-sortable.
 //
 // Any results for the same type are sortable using a bytewise/binary
-// comparison. A correct Sort order is not guaranteed when mixing different
+// comparison. A correct Sort order is not guaranteed when comparing different
 // types.
 //
-// When err == nil the length of the byte slice is always > 0. The length is
-// always the same for values of the same type. Encoded strings are the only
-// exception as they vary in length.
-// Empty strings are encoded as 0x00 to allow using them as bolt bucket names.
+// The length is the same for values of the same type. Except types string and
+// []byte as they vary in length.
 //
 // Sortability is the only requirement. None of the encodings retain any type
 // information because decoding of binary back into a value is out of scope.
@@ -50,13 +48,7 @@ type Encoder interface {
 func Encode(v interface{}) (b []byte, err error) {
 	switch vv := v.(type) {
 	case string:
-		b = []byte(vv)
-		// Special case for empty strings because empty bucket names are not
-		// allowed. Use a zero byte to represent an empty string.
-		if len(b) == 0 {
-			b = append(b, 0)
-		}
-		return
+		return []byte(vv), nil
 	case time.Time:
 		return encodeTime(vv)
 	case float64:

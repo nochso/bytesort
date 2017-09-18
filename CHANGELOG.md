@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+- **BREAKING** `Encode()` no longer guarantees `len(x) > 0`.  
+  Up to this point it was only relevant for strings. Empty strings used to be
+  encoded as `0x00` to avoid empty slices for direct use as Bolt keys. Now an
+  empty string is encoded as an empty byte slice.
 - Improve speed by 30% on average by inlining code. See commit ab2cdb70 for
   details.
 
