@@ -11,6 +11,12 @@ sortable.
 The output is intended for binary/bytewise comparison and sorting.
 More specifically for creating the keys used in indexes of key value stores.
 
+- [Install](#install)
+- [Usage](#usage)
+	- [Output example](#output-example)
+- [Change log and versioning](#change-log-and-versioning)
+- [License](#license)
+
 ## Install
 
 ```sh
