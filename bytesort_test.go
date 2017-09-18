@@ -229,6 +229,20 @@ var sortTests = map[string][]interface{}{
 		"bä",
 		"bö",
 	},
+	"[]uint8": {
+		[]byte(""),
+		[]byte("  ZOO"),
+		[]byte("  zoo"),
+		[]byte(" Aaron"),
+		[]byte("!Aaron"),
+		[]byte("Aaron"),
+		[]byte("Abe"),
+		[]byte("Bert"),
+		[]byte("aaron"),
+		[]byte("bert"),
+		[]byte("bä"),
+		[]byte("bö"),
+	},
 	"time.Time": {
 		time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC),
 		time.Date(1970, time.January, 1, 0, 0, 0, 0, time.UTC).In(location),
@@ -271,7 +285,8 @@ func testEncodeSortability(t *testing.T, values []interface{}) {
 		exp = append(exp, b)
 		act = append(act, b)
 	}
-	if reflect.TypeOf(values[0]).Kind() != reflect.String {
+	typ := reflect.TypeOf(values[0]).String()
+	if typ != "string" && typ != "[]uint8" {
 		for i := 1; i < len(act); i++ {
 			if len(act[i-1]) == len(act[i]) {
 				continue
@@ -330,7 +345,7 @@ func TestEncode_fixedLengthExceptForStrings(t *testing.T) {
 				}
 				if length == -1 {
 					length = len(b)
-				} else if length != len(b) && typ != "string" {
+				} else if length != len(b) && typ != "string" && typ != "[]uint8" {
 					t.Errorf(
 						"expected fixed length for type %s: length %d of %q is different from the first value's length %d",
 						typ,

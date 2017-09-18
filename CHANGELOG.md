@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Interface `Encoder` `EncodeSortable() ([]byte, error)`. It allows you to
   define the sortable encoding of your own types.
 - Add godoc example of `Encode()` with output.
+- Add encoding for `[]byte` by returning copy of slice.
 
 ### Changed
 

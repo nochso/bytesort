@@ -45,8 +45,13 @@ type Encoder interface {
 //	uint uint8 uint16 uint32 uint64
 //	string    (case-sensitive)
 //	time.Time (normalised to UTC)
+//	[]byte    (copied)
 func Encode(v interface{}) (b []byte, err error) {
 	switch vv := v.(type) {
+	case []byte:
+		b := make([]byte, len(vv))
+		copy(b, vv)
+		return b, nil
 	case string:
 		return []byte(vv), nil
 	case time.Time:
