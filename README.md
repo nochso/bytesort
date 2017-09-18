@@ -55,7 +55,8 @@ for _, v := range vv {
 //       01 bool   true
 ```
 
-Use `bytes.Compare` and `sort.Slice` to sort a slice of []byte:
+Use [bytes.Compare](https://godoc.org/bytes#Compare) and
+[sort.Slice](https://godoc.org/sort#Slice) to sort a slice of `[]byte`:
 
 ```go
 input := [][]byte{ ... }
@@ -64,7 +65,10 @@ sort.Slice(s, func(i, j int) bool {
 })
 ```
 
-`sort.Search` might also be of interest.
+Using [sort.Sort](https://godoc.org/sort#Sort) on structs that implement
+[sort.Interface](https://godoc.org/sort#Interface) might be faster.
+
+[sort.Search](https://godoc.org/sort#Search) might also be of interest.
 
 ## Change log and versioning
 
