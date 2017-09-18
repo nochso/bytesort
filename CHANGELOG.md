@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.0.0] - 2017-09-18
+
 ### Added
 
 - Interface `Encoder` `EncodeSortable() ([]byte, error)`. It allows you to
@@ -29,4 +31,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Split github.com/nochso/bolster/bytesort into a new separate repository.
 
-[Unreleased]: https://github.com/nochso/bytesort/compare/1.0.0...HEAD
+[2.0.0]: https://github.com/nochso/bytesort/compare/1.0.0...2.0.0
+[Unreleased]: https://github.com/nochso/bytesort/compare/2.0.0...HEAD
